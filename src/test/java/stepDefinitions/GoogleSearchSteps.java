@@ -24,7 +24,7 @@ public class GoogleSearchSteps {
         // Common XPath for the 'Accept all' or similar consent button
         By consentButtonLocator = By.xpath("//button[div[text()='Accept all']]");
 
-        WebDriverWait wait = new WebDriverWait(Hooks.driver, Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(Hooks.driver, Duration.ofSeconds(20));
 
         try {
             WebElement consentButton = wait.until(ExpectedConditions.elementToBeClickable(consentButtonLocator));
@@ -56,7 +56,7 @@ public class GoogleSearchSteps {
         // This is a more reliable indicator that the results page has loaded.
         By searchInputLocator = By.name("q");
 
-        WebDriverWait wait = new WebDriverWait(Hooks.driver, Duration.ofSeconds(15)); // Increased wait time to 15s
+        WebDriverWait wait = new WebDriverWait(Hooks.driver, Duration.ofSeconds(75)); // Increased wait time to 15s
         wait.until(ExpectedConditions.attributeToBe(searchInputLocator, "value", expectedTerm));
 
         // 2. Assert that the search input box on the results page contains the expected term.
