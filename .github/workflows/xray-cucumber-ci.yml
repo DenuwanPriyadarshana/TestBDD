@@ -37,6 +37,7 @@ jobs:
 
       # 4. Upload Report to Xray
       - name: ⬆️ Upload Test Report to Xray
+        if: always()
         # Using the reliable market-square action, confirmed by Xray documentation strategy
         uses:  mikepenz/xray-action@v2.4.5
         with:
