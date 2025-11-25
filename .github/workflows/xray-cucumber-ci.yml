@@ -37,11 +37,17 @@ jobs:
 
       # 4. Upload Report to Xray
       - name: ⬆️ Upload Test Report to Xray
-        uses: thoreli/xray-cucumber-report-action@v2
+        # FIX: Replaced inaccessible 'thoreli' action with reliable 'market-square' alternative
+        uses: market-square/xray-action@v1.2
         with:
-          client_id: ${{ secrets.XRAY_CLIENT_ID }}
-          client_secret: ${{ secrets.XRAY_CLIENT_SECRET }}
+          # Required format for the new action
+          format: "cucumber"
+          # Report path
           report_path: target/cucumber-report/cucumber.json
           test_plan_key: ${{ github.event.inputs.test_plan_key }}
           summary: "Automated Run for Plan ${{ github.event.inputs.test_plan_key }} (Commit: ${{ github.sha }}), It is forbidden to specify block composed value at the same line as key"
           description: Test execution triggered from GitHub Actions.
+        # Credentials passed via environment variables (preferred secure method)
+        env:
+          XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
+          XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
