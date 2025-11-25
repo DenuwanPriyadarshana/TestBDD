@@ -1,0 +1,47 @@
+name: BDD Tests & Xray Report
+
+# ------------------------------------------------------------------------
+# TRIGGER SECTION
+# We use 'workflow_dispatch' to allow manual input of the Test Plan Key.
+# ------------------------------------------------------------------------
+on:
+  workflow_dispatch:
+    inputs:
+      test_plan_key:
+        description: 'Jira Issue Key for the Xray Test Plan (e.g., REG-101)'
+        required: true
+        default: 'REGRESSION-RUN'
+
+jobs:
+  run_tests_and_report:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the repository code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Setup Java Environment
+      # Note: Using Java 25 as requested. If this fails, switch to '21'.
+      - name: Setup Java Environment
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      # 3. Build and Run Tests
+      # This runs the TestRunner.java and produces target/cucumber-report/cucumber.json
+      - name: ⚙️ Run Maven Tests
+        run: mvn clean test -DskipTests=false
+
+      # 4. Upload Report to Xray
+      - name: ⬆️ Upload Test Report to Xray
+        uses: thoreli/xray-cucumber-report-action@v2
+        with:
+          client_id: ${{ secrets.JIRA_XRAY_CLIENT_ID }}
+          client_secret: ${{ secrets.JIRA_XRAY_CLIENT_SECRET }}
+          report_path: target/cucumber-report/cucumber.json
+          test_plan_key: ${{ github.event.inputs.test_plan_key }}
+          summary: "Automated Run for Plan ${{ github.event.inputs.test_plan_key }} (Commit: ${{ github.sha }}), It is forbidden to specify block composed value at the same line as key"
+          description: Test execution triggered from GitHub Actions.
