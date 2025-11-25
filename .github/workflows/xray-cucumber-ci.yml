@@ -24,7 +24,7 @@ jobs:
       # 2. Setup Java Environment
       # Note: Using Java 25 as requested. If this fails, switch to '21'.
       - name: Setup Java Environment
-        uses: actions:setup-java@v4
+        uses: actions/setup-java@v4
         with:
           java-version: '25'
           distribution: 'temurin'
