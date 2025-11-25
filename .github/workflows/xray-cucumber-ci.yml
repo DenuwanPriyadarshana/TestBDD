@@ -38,7 +38,7 @@ jobs:
       # 4. Upload Report to Xray
       - name: ⬆️ Upload Test Report to Xray
         # Using the reliable market-square action, confirmed by Xray documentation strategy
-        uses: market-square/xray-action@v2
+        uses:  mikepenz/xray-action@v2.4.5
         with:
           # Required format: Cucumber/Gherkin
           format: "cucumber"
