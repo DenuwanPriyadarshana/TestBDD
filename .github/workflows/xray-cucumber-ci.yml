@@ -22,7 +22,6 @@ jobs:
         uses: actions/checkout@v4
 
       # 2. Setup Java Environment
-      # Note: Using Java 25 as requested. If this fails, switch to '21'.
       - name: Setup Java Environment
         uses: actions/setup-java@v4
         with:
@@ -31,24 +30,26 @@ jobs:
           cache: 'maven'
 
       # 3. Build and Run Tests
-      # This runs the TestRunner.java and produces target/cucumber-report/cucumber.json
+      # We give this step an ID for reference, but it can now fail without stopping the next step
       - name: ⚙️ Run Maven Tests
+        id: run-tests
         run: mvn clean test -DskipTests=false
 
       # 4. Upload Report to Xray
+      # CRITICAL FIX: The 'if: always()' condition ensures this step executes
+      # even if the previous 'Run Maven Tests' step fails due to test failures.
       - name: ⬆️ Upload Test Report to Xray
         if: always()
-        # Using the reliable market-square action, confirmed by Xray documentation strategy
-        uses:  mikepenz/xray-action@v2.4.5
+        uses: mikepenz/xray-action@v2.4.5
         with:
-          # Required format: Cucumber/Gherkin
-          format: "cucumber"
-          # Report path as defined in TestRunner.java
-          report_path: target/cucumber-report/cucumber.json
-          test_plan_key: ${{ github.event.inputs.test_plan_key }}
-          summary: "Automated Run for Plan ${{ github.event.inputs.test_plan_key }} (Commit: ${{ github.sha }}), It is forbidden to specify block composed value at the same line as key"
-          description: Test execution triggered from GitHub Actions.
-        # Credentials passed via environment variables
-        env:
-          XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
-          XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
+          # This action requires the test format and paths
+          testFormat: "cucumber"
+          testPaths: "target/cucumber-report/cucumber.json"
+
+          # Credentials
+          username: ${{ secrets.XRAY_CLIENT_ID }}
+          password: ${{ secrets.XRAY_CLIENT_SECRET }}
+
+          # Xray Test Plan Key
+          # FIX: Removed 'summary' and 'description' as they are not supported by this action.
+          testPlanKey: ${{ github.event.inputs.test_plan_key }}
