@@ -39,8 +39,8 @@ jobs:
       - name: ⬆️ Upload Test Report to Xray
         uses: thoreli/xray-cucumber-report-action@v2
         with:
-          client_id: ${{ secrets.JIRA_XRAY_CLIENT_ID }}
-          client_secret: ${{ secrets.JIRA_XRAY_CLIENT_SECRET }}
+          client_id: ${{ secrets.XRAY_CLIENT_ID }}
+          client_secret: ${{ secrets.XRAY_CLIENT_SECRET }}
           report_path: target/cucumber-report/cucumber.json
           test_plan_key: ${{ github.event.inputs.test_plan_key }}
           summary: "Automated Run for Plan ${{ github.event.inputs.test_plan_key }} (Commit: ${{ github.sha }}), It is forbidden to specify block composed value at the same line as key"
