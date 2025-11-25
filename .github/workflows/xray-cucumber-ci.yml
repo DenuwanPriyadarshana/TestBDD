@@ -34,26 +34,22 @@ jobs:
       # This runs the TestRunner.java and produces target/cucumber-report/cucumber.json
       - name: ⚙️ Run Maven Tests
         run: mvn clean test -DskipTests=false
+          
+          # 4. Upload Report to Xray
+               - name: ⬆️ Upload Test Report to Xray
+          # FIX: Changed the version tag from 'v5' to 'v3', the correct, stable major version.
+               uses: mikepenz/xray-action@v3
+               with:
+                 # --- Xray Cloud Authentication ---
+                 username: ${{ secrets.XRAY_CLIENT_ID }}
+                 password: ${{ secrets.XRAY_CLIENT_SECRET }}
+                 xrayCloud: true
 
-      # 4. Upload Report to Xray
-      - name: ⬆️ Upload Test Report to Xray
-        # FIX #1: Corrected action path to the actively maintained 'mikepenz/xray-action'.
-        # We use '@v5' which is the latest stable version.
-        uses: mikepenz/xray-action@v5
-        with:
-          # --- Xray Cloud Authentication (Required for your allybees.atlassian.net instance) ---
-          # Note: We pass the Client ID/Secret directly as 'username' and 'password' in 'v5' of this action.
-          username: ${{ secrets.XRAY_CLIENT_ID }}
-          password: ${{ secrets.XRAY_CLIENT_SECRET }}
-          xrayCloud: true # Must be set to true for Jira Cloud instances.
-
-          # --- Report Details ---
-          testFormat: "cucumber" # The parameter name is now 'testFormat'
-          testPaths: "target/cucumber-report/cucumber.json" # The parameter name is now 'testPaths'
-          testPlanKey: ${{ github.event.inputs.test_plan_key }}
-
-          # FIX #2: Corrected YAML syntax error by moving the 'summary' block to the next line and removing the invalid comma.
-          summary: |
-            Automated Run for Plan ${{ github.event.inputs.test_plan_key }}
-            Commit: ${{ github.sha }}
-          description: Test execution triggered from GitHub Actions.
+                 # --- Report Details ---
+                 testFormat: "cucumber"
+                 testPaths: "target/cucumber-report/cucumber.json"
+                 testPlanKey: ${{ github.event.inputs.test_plan_key }}
+                 summary: |
+                   Automated Run for Plan ${{ github.event.inputs.test_plan_key }}
+                   Commit: ${{ github.sha }}
+                 description: Test execution triggered from GitHub Actions.
