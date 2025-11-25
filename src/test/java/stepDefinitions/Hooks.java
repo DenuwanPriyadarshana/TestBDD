@@ -26,7 +26,7 @@ public class Hooks {
         // -----------------------------------------------------------
 
         // --- STABILITY & VISIBILITY ARGUMENTS (Headless removed for visibility) ---
-        // options.addArguments("--headless"); // REMOVED so you can see the browser
+        options.addArguments("--headless"); // REMOVED so you can see the browser
         options.addArguments("--disable-gpu");
         options.addArguments("--window-size=1920,1080");
         options.addArguments("--disable-popup-blocking");
