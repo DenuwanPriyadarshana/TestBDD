@@ -3,7 +3,6 @@ Feature: Test BDD
 
   @TEST_BP4-1038
   Scenario: Test BDD
-  Scenario: Test BDD
     Given I am on the Google homepage
     When I accept any Google consent or cookie prompts
     And I search for "Sri Lanka"
