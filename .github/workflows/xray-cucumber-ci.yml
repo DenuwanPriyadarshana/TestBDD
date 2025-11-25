@@ -37,8 +37,8 @@ jobs:
 
       # 4. Upload Report to Xray
       - name: ⬆️ Upload Test Report to Xray
-        # FIX: Replaced inaccessible 'thoreli' action with reliable 'market-square' alternative
-        uses: market-square/xray-action@v1.2
+        # FIX: Updated version to '@v2' for better stability and resolution
+        uses: market-square/xray-action@v2
         with:
           # Required format for the new action
           format: "cucumber"
@@ -49,5 +49,7 @@ jobs:
           description: Test execution triggered from GitHub Actions.
         # Credentials passed via environment variables (preferred secure method)
         env:
+          # FIX: Mapping secrets to the variables the action expects (XRAY_CLIENT_ID/SECRET)
+          # using the secret names you defined (JIRA_XRAY_CLIENT_ID/SECRET).
           XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
           XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
