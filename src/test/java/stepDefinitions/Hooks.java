@@ -16,24 +16,30 @@ public class Hooks {
     public void setup() {
         ChromeOptions options = new ChromeOptions();
 
+        // --- ENVIRONMENT FIX FOR CI SERVERS (HEADLESS MODE) ---
+        // CRITICAL FIX: Add the --headless argument so Chrome can run without a display server.
+        options.addArguments("--headless=new"); // Use 'new' for modern Chrome versions
+        // -----------------------------------------------------------
+
+        // --- NEW CRITICAL FIX: ANTI-BOT / USER-AGENT MASKING ---
+        // Set a common User-Agent string to mask the automation signature
+        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36");
+        // -----------------------------------------------------------
+
         // --- FIXES FOR GOOGLE CAPTCHA / BOT DETECTION ---
-        // 1. Hide the "Chrome is being controlled by automation" info bar
         options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
-        // 2. Prevent detection by modifying the navigator.webdriver property
         options.addArguments("--disable-blink-features=AutomationControlled");
-        // 3. Run in Incognito mode: Ensures a clean, fresh session every time
         options.addArguments("--incognito");
         // -----------------------------------------------------------
 
-        // --- STABILITY & VISIBILITY ARGUMENTS (Headless removed for visibility) ---
-        options.addArguments("--headless"); // REMOVED so you can see the browser
+        // --- STABILITY & VISIBILITY ARGUMENTS ---
         options.addArguments("--disable-gpu");
-        options.addArguments("--window-size=1920,1080");
+        options.addArguments("--window-size=1920,1080"); // Set a fixed size for consistent screenshots/elements
         options.addArguments("--disable-popup-blocking");
+        options.addArguments("--no-sandbox"); // Important for security in containerized environments
+        options.addArguments("--disable-dev-shm-usage"); // Helps prevent memory issues in CI/Docker
 
-        // --- Your added arguments (Typo corrected in remote-allow-origins) ---
         options.addArguments("--ignore-certificate-errors");
-        // FIX: Corrected typo from 'remort-allow-origins' to 'remote-allow-origins'
         options.addArguments("--remote-allow-origins=*");
         options.setAcceptInsecureCerts(true);
 
